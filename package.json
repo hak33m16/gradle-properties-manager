@@ -1,0 +1,28 @@
+{
+  "name": "gradle-properties-manager",
+  "version": "0.0.1",
+  "description": "CLI utility for managing several instances of global gradle.properties files",
+  "main": "src/index.js",
+  "bin": {
+    "gradle-properties-manager": "./bin/gradle-properties-manager",
+    "gpm": "./bin/gradle-properties-manager"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "cli",
+    "gradle",
+    "properties",
+    "manager",
+    "gradle-properties-manager"
+  ],
+  "author": "hak33m16",
+  "license": "MIT",
+  "dependencies": {
+    "arg": "^5.0.0",
+    "esm": "^3.2.25",
+    "inquirer": "^8.0.0",
+    "yargs": "^16.2.0"
+  }
+}
