@@ -1,7 +1,9 @@
 {
+    "author": "hak33m16",
     "name": "gradle-properties-manager",
     "version": "0.0.1",
     "description": "CLI utility for managing several instances of global gradle.properties files",
+    "license": "MIT",
     "main": "src/index.js",
     "bin": {
         "gradle-properties-manager": "./bin/gradle-properties-manager",
@@ -17,8 +19,9 @@
         "manager",
         "gradle-properties-manager"
     ],
-    "author": "hak33m16",
-    "license": "MIT",
+    "scripts": {
+        "lint": "eslint --ext .js,.ts src"
+    },
     "dependencies": {
         "chalk": "^4.1.0",
         "commander": "^7.2.0",
