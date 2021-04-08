@@ -20,21 +20,21 @@ Executable available as `gradle-properties-manager` as well as `gpm`
 
 When first using the property manager, it's a good idea to back up your current `~/.gradle/gradle.properties` file. The `--init` flag will:
 
-- Backup your current `gradle.properties` file to `~/.gradle/gradle.properties.bak`
-- Create a `~/.gpm` folder where your profiles will be stored
+-   Backup your current `gradle.properties` file to `~/.gradle/gradle.properties.bak`
+-   Create a `~/.gpm` folder where your profiles will be stored
 
 ### Managing Profiles
 
-- To create a profile:
-  `gpm --create-profile my-custom-profile`
+-   To create a profile:
+    `gpm --create-profile my-custom-profile`
 
 _Note: The profile name is just an alias for the `.properties` file that it's stored in. Avoid using slashes or invalid filesystem characters in general for profile names_
 
-- To list all available profiles:
-  `gpm --profiles`
+-   To list all available profiles:
+    `gpm --profiles`
 
-- To switch profiles:
-  `gpm --profile my-custom-profile`
+-   To switch profiles:
+    `gpm --profile my-custom-profile`
 
 ### Managing Properties
 
@@ -48,11 +48,11 @@ If you'd like to add this property to the global profile, just add the `--global
 ## Example Command Layout
 
 > global.properties
-nexusUrl=myspecialurl.com
+> nexusUrl=myspecialurl.com
 
 > colemeisterzpro.properties
-// implicitly contains nexusUrl
-nexusUsername=username
+> // implicitly contains nexusUrl
+> nexusUsername=username
 
 gpm profile // displays current profile
 
@@ -62,7 +62,7 @@ gpm profile <name> // list info about one profile
 
 gpm profile ls // list all profiles
 
--------
+---
 
 gpm property ls --global --profile <profilename> // list all current properties on this profile
 
@@ -73,6 +73,6 @@ gpm property set nexusPassword --secret // <-- triggers prompt and base64 encode
 
 gpm property unset nexusUsername --global --profile <profilename>
 
--------
+---
 
 gpm version

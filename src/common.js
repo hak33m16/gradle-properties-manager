@@ -1,5 +1,3 @@
-const chalk = require('chalk')
+const chalk = require('chalk');
 
-let log = function(message, level) {
-
-}
+let log = function (message, level) {};
