@@ -44,3 +44,35 @@ When a property is added via the CLI, it's automatically added to whatever the c
 In our case, this would set this property inside of our `my-custom-profile.properties` file inside of `~/.gpm`
 
 If you'd like to add this property to the global profile, just add the `--global` flag when adding via the `--property` argument
+
+## Example Command Layout
+
+> global.properties
+nexusUrl=myspecialurl.com
+
+> colemeisterzpro.properties
+// implicitly contains nexusUrl
+nexusUsername=username
+
+gpm profile // displays current profile
+
+gpm profile create <name> // create a profile with this name
+gpm profile delete <name> // prompts for confirmation of deletion
+gpm profile <name> // list info about one profile
+
+gpm profile ls // list all profiles
+
+-------
+
+gpm property ls --global --profile <profilename> // list all current properties on this profile
+
+gpm property set nexusUsername colemeister // <--- goes into profile
+gpm property set nexusUsername colemeister --global // <--- goes into global
+gpm property set nexusUsername --profile <profilename> // <-- set to specific profile
+gpm property set nexusPassword --secret // <-- triggers prompt and base64 encode
+
+gpm property unset nexusUsername --global --profile <profilename>
+
+-------
+
+gpm version
