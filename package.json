@@ -26,8 +26,7 @@
         "chalk": "^4.1.0",
         "commander": "^7.2.0",
         "esm": "^3.2.25",
-        "inquirer": "^8.0.0",
-        "yargs": "^16.2.0"
+        "inquirer": "^8.0.0"
     },
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^4.21.0",
