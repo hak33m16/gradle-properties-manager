@@ -1,15 +1,13 @@
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
+// import fs from 'fs';
+// import path from 'path';
+// import os from 'os';
+import chalk from 'chalk';
+import { Command, Option } from 'commander';
+import inquirer from 'inquirer';
+// import constants from '../constants';
+// import common from '../common';
 
-const chalk = require('chalk');
-const { Command, Option } = require('commander');
-const inquirer = require('inquirer');
-
-const constants = require('../constants');
-const common = require('../common');
-
-let set = new Command('set')
+const set = new Command('set')
     .arguments('[key] [value]')
     .description('Set a property for a specific profile')
     .action(async (key, value, options) => {
@@ -30,18 +28,20 @@ let set = new Command('set')
                 },
             ]);
         } else if (key && value) {
+            // some logic
         } else {
+            // other logic
         }
 
         console.log(prompts.secret);
     });
 
-let profile = new Option(
+const profile = new Option(
     '-p, --profile <name>',
     'The name of the profile to set the property on'
 ).makeOptionMandatory();
 
-let secret = new Option(
+const secret = new Option(
     '-s, --secret',
     'User will be prompted in silent mode for the property value'
 );
