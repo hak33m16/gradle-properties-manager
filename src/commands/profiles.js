@@ -3,7 +3,7 @@ const path = require('path')
 const os = require('os')
 
 const chalk = require('chalk')
-const { Command, Option} = require("commander");
+const { Command, Option } = require("commander");
 const inquirer = require('inquirer')
 
 const constants = require('../constants')
@@ -12,9 +12,6 @@ const common = require('../common')
 // const program = new Command();
 
 let profiles = new Command('profiles', 'Commands related to profile CRUD')
-    .action((idk, options) => {
-        console.log(options.args)
-    })
 
 let profiles_add = new Command('add [name]')
     .description('Add a new profile with the given name')
