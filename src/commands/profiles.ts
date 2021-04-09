@@ -1,7 +1,3 @@
-import fs from 'fs';
-import path from 'path';
-import os from 'os';
-
 import chalk from 'chalk';
 import { Command, Option } from 'commander';
 import inquirer from 'inquirer';
@@ -11,10 +7,15 @@ import inquirer from 'inquirer';
 
 // const program = new Command();
 
-// @ts-expect-error: says the second arg is not allowed
-const profiles = new Command('profiles', 'Commands related to profile CRUD');
+const profiles = new Command();
 
-const profiles_add = new Command('add [name]')
+// TODO: Figure out why we have to set the description here when the docs state
+// that using the second parameter in the constructor should be sufficient
+// https://github.com/tj/commander.js/blob/master/examples/pm#L12
+
+console.log('we out here');
+
+const profiles_set = new Command('set [name]')
     .description('Add a new profile with the given name')
     .action((name, options) => {
         console.log(chalk.green('beep boop adding profile:', name));
@@ -29,19 +30,15 @@ const profiles_add = new Command('add [name]')
     */
     });
 
-const profiles_remove = new Command('remove [name]')
+const profiles_remove = new Command('unset [name]')
     .description('Remove an existing profile with the given name')
     .action((name, options) => {});
 
-const profiles_list = new Command('list')
-    .description('List all known profiles')
+const profiles_list = new Command('ls')
+    .description('List all profiles')
     .action((options) => {});
 
-// program.addCommand(profiles_add)
-// program.addCommand(profiles_remove)
-// program.addCommand(profiles_list)
-
-profiles.addCommand(profiles_add);
+profiles.addCommand(profiles_set);
 profiles.addCommand(profiles_remove);
 profiles.addCommand(profiles_list);
 
@@ -50,4 +47,6 @@ profiles.addCommand(profiles_list);
 
 //set.addOption(secret)
 
-export default profiles;
+//export default profiles;
+
+profiles.parse(process.argv);
