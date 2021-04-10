@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { Command, Option } from 'commander';
 import inquirer from 'inquirer';
-import { handleSet } from './property/set.ts';
+import { handleSet } from './property/set';
 
 const program = new Command();
 

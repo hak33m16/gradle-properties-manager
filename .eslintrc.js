@@ -4,6 +4,7 @@ module.exports = {
         node: true,
     },
     extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
+    ignorePatterns: ['bin', 'node_modules', 'build'],
     parser: '@typescript-eslint/parser',
     parserOptions: {
         ecmaVersion: 12,

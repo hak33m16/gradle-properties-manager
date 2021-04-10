@@ -15,7 +15,7 @@ const promptKey = async () => {
     return propname;
 };
 
-const promptValue = async (key, secret) => {
+const promptValue = async (key: string, secret: boolean) => {
     if (secret) {
         const { value } = await inquirer.prompt([
             {
@@ -37,7 +37,11 @@ const promptValue = async (key, secret) => {
     return value;
 };
 
-export const handleSet = async (keyInput, valueInput, options) => {
+export const handleSet = async (
+    keyInput: string,
+    valueInput: string,
+    options: { secret: boolean }
+): Promise<void> => {
     const { secret } = options;
     let key = keyInput;
     let value = valueInput;
