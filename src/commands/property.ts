@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import { Command, Option } from 'commander';
 import inquirer from 'inquirer';
+import { handleSet } from './property/set.ts';
 
 const program = new Command();
 
@@ -11,26 +12,7 @@ program
         '-s, --secret',
         'User will be prompted in silent mode for the property value'
     )
-    .action(async (key, value, options) => {
-        console.log(chalk.green('beep boop adding profile:', key));
-
-        let prompts;
-        if (options.secret && !value && key) {
-            prompts = await inquirer.prompt([
-                {
-                    type: 'password',
-                    name: 'secret',
-                    message: `Enter value for secret property '${key}'`,
-                    mask: '*',
-                },
-            ]);
-        } else if (key && value) {
-            // some logic
-        } else {
-            // other logic
-        }
-        console.log(prompts);
-    });
+    .action(handleSet);
 
 program
     .command('unset [key]')
