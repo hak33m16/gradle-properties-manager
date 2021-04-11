@@ -1,7 +1,7 @@
 import chalk from 'chalk';
 import { Command, Option } from 'commander';
 import inquirer from 'inquirer';
-import { handleSet } from './property/set';
+import { handleSet } from './property/set-cli';
 
 const program = new Command();
 
@@ -11,6 +11,10 @@ program
     .option(
         '-s, --secret',
         'User will be prompted in silent mode for the property value'
+    )
+    .option(
+        '-g, --global',
+        'Sets the property to the shared, global properties scope. This will be shared across all profiles'
     )
     .action(handleSet);
 
