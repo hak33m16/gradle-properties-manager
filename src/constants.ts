@@ -12,6 +12,11 @@ export const GRADLE_PROPERTIES_FILE_LOCATION = path.join(
     GRADLE_HOME_DIRECTORY_LOCATION,
     GRADLE_PROPERTIES_FILE_NAME
 );
+export const GRADLE_PROPERTIES_BAK_FILE_NAME = 'gradle.properties.bak';
+export const GRADLE_PROPERTIES_BAK_FILE_LOCATION = path.join(
+    GRADLE_HOME_DIRECTORY_LOCATION,
+    `${GRADLE_PROPERTIES_FILE_NAME}.bak`
+);
 export const GPM_HOME_DIRECTORY_NAME = '.gpm';
 export const GPM_HOME_DIRECTORY_LOCATION = path.join(
     USER_HOME,
@@ -21,3 +26,4 @@ export const GPM_GLOBAL_PROPERTIES_FILE_NAME = 'global.properties';
 export const GPM_DEFAULT_PROFILE_NAME = 'default';
 export const GPM_CURRENT_PROFILE_FILE_MARKER = '.currentprofile';
 export const PROPERTIES_FILE_EXTENSION = 'properties';
+export const GPM_ANNOTATION = '//@gpm';

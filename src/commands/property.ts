@@ -14,7 +14,12 @@ program
     )
     .option(
         '-g, --global',
-        'Sets the property to the shared, global properties scope. This will be shared across all profiles'
+        'Saves the property to the global properties scope. \
+This will be shared across all profiles'
+    )
+    .option(
+        '-p, --profile',
+        'Saves the property to a specific profile, ignoring the current one'
     )
     .action(handleSet);
 
