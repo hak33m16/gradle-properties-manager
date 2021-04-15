@@ -23,7 +23,18 @@ export const GPM_HOME_DIRECTORY_LOCATION = path.join(
     GPM_HOME_DIRECTORY_NAME
 );
 export const GPM_GLOBAL_PROPERTIES_FILE_NAME = 'global.properties';
+export const GPM_GLOBAL_PROPERTIES_FILE_LOCATION = path.join(
+    GPM_HOME_DIRECTORY_LOCATION,
+    GPM_GLOBAL_PROPERTIES_FILE_NAME
+);
+export const GPM_GLOBAL_PROPERTIES_PROFILE = 'global';
 export const GPM_DEFAULT_PROFILE_NAME = 'default';
-export const GPM_CURRENT_PROFILE_FILE_MARKER = '.currentprofile';
+export const GPM_CURRENT_PROFILE_FILE_NAME = 'profile';
+export const GPM_CURRENT_PROFILE_FILE_LOCATION = path.join(
+    GPM_HOME_DIRECTORY_LOCATION,
+    GPM_CURRENT_PROFILE_FILE_NAME
+);
 export const PROPERTIES_FILE_EXTENSION = 'properties';
-export const GPM_ANNOTATION = '//@gpm';
+// See to reference properties file allowed comments:
+// https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html#load(java.io.Reader)
+export const GPM_ANNOTATION = '#@gpm';

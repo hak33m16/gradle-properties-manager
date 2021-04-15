@@ -6,14 +6,16 @@ const promptFileRemoval = async (file: string) => {
     const { remove } = await inquirer.prompt([
         {
             type: 'confirm',
-            name: 'backup',
+            name: 'remove',
             message: `Remove file '${file}'?`,
             default: false,
         },
     ]);
 
     if (remove) {
-        fs.unlinkSync(file);
+        if (fs.existsSync(file)) {
+            fs.unlinkSync(file);
+        }
     }
 };
 
@@ -21,14 +23,16 @@ const promptDirectoryRemoval = async (directory: string) => {
     const { remove } = await inquirer.prompt([
         {
             type: 'confirm',
-            name: 'backup',
+            name: 'remove',
             message: `Remove directory '${directory}' and all of it's content?`,
             default: false,
         },
     ]);
 
     if (remove) {
-        fs.rmdirSync(directory, { recursive: true });
+        if (fs.existsSync(directory)) {
+            fs.rmdirSync(directory, { recursive: true });
+        }
     }
 };
 

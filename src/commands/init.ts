@@ -1,6 +1,13 @@
 import fs from 'fs';
 
 import * as constants from '../constants';
+import {
+    createGlobalProfile,
+    createProfile,
+    getAllProfiles,
+    getCurrentProfileName,
+    setProfile,
+} from '../common';
 
 import chalk from 'chalk';
 import inquirer from 'inquirer';
@@ -26,7 +33,9 @@ const BACKUP_CREATED = chalk.green(
     `Successfully backed up '${constants.GRADLE_PROPERTIES_FILE_NAME}' to '${constants.GRADLE_PROPERTIES_BAK_FILE_NAME}'...`
 );
 
-const backup = async (): Promise<void> => {};
+const CREATE_PROFILE = 'Enter name to use for initial profile';
+
+//const backup = async (): Promise<void> => {};
 
 const handleExistingProperties = async (): Promise<void> => {
     const { backup } = await inquirer.prompt([
@@ -72,7 +81,23 @@ const gpmInitialized = (): boolean => {
         return true;
     }
 
+    // TODO: Account for the case where ~/.gpm exists, but nothing else
+
     return false;
+};
+
+const createInitialProfile = async (): Promise<void> => {
+    const { name } = await inquirer.prompt([
+        {
+            type: 'input',
+            name: 'name',
+            message: CREATE_PROFILE,
+            default: constants.GPM_DEFAULT_PROFILE_NAME,
+        },
+    ]);
+
+    createProfile(name);
+    setProfile(name);
 };
 
 export const handleInit = async (): Promise<void> => {
@@ -86,12 +111,25 @@ export const handleInit = async (): Promise<void> => {
     // - prompt for profile name?? [default]
     // - ask if they'd like to move any properties to this profile
 
-    console.log(constants.GRADLE_PROPERTIES_FILE_LOCATION);
+    let promptForExistingProperties = false;
     if (fs.existsSync(constants.GRADLE_PROPERTIES_FILE_LOCATION)) {
         if (gpmInitialized()) {
             console.log(ALREADY_INITIALIZED);
             process.exit(1);
         }
-        handleExistingProperties();
+        await handleExistingProperties();
+        promptForExistingProperties = true;
+    }
+
+    fs.mkdirSync(constants.GPM_HOME_DIRECTORY_LOCATION);
+    await createInitialProfile();
+    createGlobalProfile();
+
+    console.log('Current profile:', getCurrentProfileName());
+    console.log('All profiles:', getAllProfiles());
+
+    if (promptForExistingProperties) {
+        // prompt to add existing properties to global scope
+        // prompt to add existing properties to profile
     }
 };
