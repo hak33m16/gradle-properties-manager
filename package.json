@@ -22,7 +22,8 @@
         "dev": "tsc --project tsconfig.build.json -w",
         "compile": "tsc --project tsconfig.build.json ",
         "test": "jest --watch",
-        "test:ci": "CI=true jest"
+        "test:ci": "CI=true jest",
+        "clean": "ts-node scripts/clean-gpm-files.ts"
     },
     "dependencies": {
         "chalk": "^4.1.0",
@@ -30,6 +31,7 @@
         "del": "^6.0.0",
         "esm": "^3.2.25",
         "inquirer": "^8.0.0",
+        "ts-node": "^9.1.1",
         "uuid": "^8.3.2"
     },
     "devDependencies": {
