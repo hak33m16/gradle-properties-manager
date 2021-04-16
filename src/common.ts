@@ -58,6 +58,8 @@ export const createProfile = (profile: string): void => {
 export const setProfile = (profile: string): void => {
     if (profileExists(profile)) {
         fs.writeFileSync(constants.GPM_CURRENT_PROFILE_FILE_LOCATION, profile);
+        // TODO: Overwrite the content of gradle.properties with those
+        // inside of this profile + global
     } else {
         throw new Error(
             `Can't switch to profile '${profile}' as it doesn't exist`

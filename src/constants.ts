@@ -35,6 +35,7 @@ export const GPM_CURRENT_PROFILE_FILE_LOCATION = path.join(
     GPM_CURRENT_PROFILE_FILE_NAME
 );
 export const PROPERTIES_FILE_EXTENSION = 'properties';
+export const PROPERTIES_FILE_COMMENT_MARKER = '#';
 // See to reference properties file allowed comments:
 // https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html#load(java.io.Reader)
 export const GPM_ANNOTATION = '#@gpm';

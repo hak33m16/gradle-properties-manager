@@ -12,10 +12,10 @@ import {
 import chalk from 'chalk';
 import inquirer from 'inquirer';
 
-const BACKUP_PROPERTIES =
+const BACKUP_PROPERTIES_FILE =
     chalk.yellow('[WARN]') +
-    ` File '${constants.GRADLE_PROPERTIES_FILE_NAME}' already exists, would you like to \
-create a backup at '${constants.GRADLE_PROPERTIES_FILE_NAME}.bak'?`;
+    ` File '${constants.GRADLE_PROPERTIES_FILE_NAME}' already exists, would \
+you like to create a backup at '${constants.GRADLE_PROPERTIES_FILE_NAME}.bak'?`;
 
 const ALREADY_INITIALIZED = chalk.red(
     "You've already initialized gradle-properties-manager..."
@@ -30,19 +30,29 @@ const BACKUP_ALREADY_EXISTS = chalk.red(
 );
 
 const BACKUP_CREATED = chalk.green(
-    `Successfully backed up '${constants.GRADLE_PROPERTIES_FILE_NAME}' to '${constants.GRADLE_PROPERTIES_BAK_FILE_NAME}'...`
+    `Successfully backed up '${constants.GRADLE_PROPERTIES_FILE_NAME}' to \
+'${constants.GRADLE_PROPERTIES_BAK_FILE_NAME}'...`
 );
 
 const CREATE_PROFILE = 'Enter name to use for initial profile';
 
-//const backup = async (): Promise<void> => {};
+const copyExistingProperties = async (): Promise<void> => {
+    const { backupToProfile } = await inquirer.prompt([
+        {
+            type: 'confirm',
+            name: 'backupToProfile',
+            message: `Select properties from '${constants.GRADLE_PROPERTIES_FILE_LOCATION}'\
+to backup to profile `,
+        },
+    ]);
+};
 
-const handleExistingProperties = async (): Promise<void> => {
+const backupExistingPropertiesFile = async (): Promise<void> => {
     const { backup } = await inquirer.prompt([
         {
             type: 'confirm',
             name: 'backup',
-            message: BACKUP_PROPERTIES,
+            message: BACKUP_PROPERTIES_FILE,
         },
     ]);
 
@@ -72,16 +82,28 @@ const handleExistingProperties = async (): Promise<void> => {
 };
 
 const gpmInitialized = (): boolean => {
-    const gradlePropertiesFileContent = fs.readFileSync(
-        constants.GRADLE_PROPERTIES_FILE_LOCATION,
-        'utf-8'
-    );
+    // TODO: Account for incomplete initialization. For example,
+    // if the .gpm home directory has been created, that doesn't
+    // necessarily mean there's an active profile and respective
+    // gpm-controlled gradle.properties file
+
+    if (fs.existsSync(constants.GPM_HOME_DIRECTORY_LOCATION)) {
+        return true;
+    }
+
+    let gradlePropertiesFileContent: string;
+    if (fs.existsSync(constants.GRADLE_PROPERTIES_FILE_LOCATION)) {
+        gradlePropertiesFileContent = fs.readFileSync(
+            constants.GRADLE_PROPERTIES_FILE_LOCATION,
+            'utf-8'
+        );
+    } else {
+        return false;
+    }
 
     if (gradlePropertiesFileContent.includes(constants.GPM_ANNOTATION)) {
         return true;
     }
-
-    // TODO: Account for the case where ~/.gpm exists, but nothing else
 
     return false;
 };
@@ -111,25 +133,19 @@ export const handleInit = async (): Promise<void> => {
     // - prompt for profile name?? [default]
     // - ask if they'd like to move any properties to this profile
 
-    let promptForExistingProperties = false;
+    if (gpmInitialized()) {
+        console.log(ALREADY_INITIALIZED);
+        process.exit(1);
+    }
+
     if (fs.existsSync(constants.GRADLE_PROPERTIES_FILE_LOCATION)) {
-        if (gpmInitialized()) {
-            console.log(ALREADY_INITIALIZED);
-            process.exit(1);
-        }
-        await handleExistingProperties();
-        promptForExistingProperties = true;
+        await backupExistingPropertiesFile();
     }
 
     fs.mkdirSync(constants.GPM_HOME_DIRECTORY_LOCATION);
     await createInitialProfile();
     createGlobalProfile();
 
-    console.log('Current profile:', getCurrentProfileName());
-    console.log('All profiles:', getAllProfiles());
-
-    if (promptForExistingProperties) {
-        // prompt to add existing properties to global scope
-        // prompt to add existing properties to profile
-    }
+    // console.log('Current profile:', getCurrentProfileName());
+    // console.log('All profiles:', getAllProfiles());
 };
