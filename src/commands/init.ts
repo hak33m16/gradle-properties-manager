@@ -1,13 +1,7 @@
 import fs from 'fs';
 
 import * as constants from '../constants';
-import {
-    createGlobalProfile,
-    createProfile,
-    getAllProfiles,
-    getCurrentProfileName,
-    setProfile,
-} from '../common';
+import * as common from '../common';
 
 import chalk from 'chalk';
 import inquirer from 'inquirer';
@@ -81,33 +75,6 @@ const backupExistingPropertiesFile = async (): Promise<void> => {
     }
 };
 
-const gpmInitialized = (): boolean => {
-    // TODO: Account for incomplete initialization. For example,
-    // if the .gpm home directory has been created, that doesn't
-    // necessarily mean there's an active profile and respective
-    // gpm-controlled gradle.properties file
-
-    if (fs.existsSync(constants.GPM_HOME_DIRECTORY_LOCATION)) {
-        return true;
-    }
-
-    let gradlePropertiesFileContent: string;
-    if (fs.existsSync(constants.GRADLE_PROPERTIES_FILE_LOCATION)) {
-        gradlePropertiesFileContent = fs.readFileSync(
-            constants.GRADLE_PROPERTIES_FILE_LOCATION,
-            'utf-8'
-        );
-    } else {
-        return false;
-    }
-
-    if (gradlePropertiesFileContent.includes(constants.GPM_ANNOTATION)) {
-        return true;
-    }
-
-    return false;
-};
-
 const createInitialProfile = async (): Promise<void> => {
     const { name } = await inquirer.prompt([
         {
@@ -118,8 +85,8 @@ const createInitialProfile = async (): Promise<void> => {
         },
     ]);
 
-    createProfile(name);
-    setProfile(name);
+    common.createProfile(name);
+    common.setProfile(name);
 };
 
 export const handleInit = async (): Promise<void> => {
@@ -133,7 +100,7 @@ export const handleInit = async (): Promise<void> => {
     // - prompt for profile name?? [default]
     // - ask if they'd like to move any properties to this profile
 
-    if (gpmInitialized()) {
+    if (common.gpmInitialized()) {
         console.log(ALREADY_INITIALIZED);
         process.exit(1);
     }
@@ -144,7 +111,7 @@ export const handleInit = async (): Promise<void> => {
 
     fs.mkdirSync(constants.GPM_HOME_DIRECTORY_LOCATION);
     await createInitialProfile();
-    createGlobalProfile();
+    common.createGlobalProfile();
 
     // console.log('Current profile:', getCurrentProfileName());
     // console.log('All profiles:', getAllProfiles());
