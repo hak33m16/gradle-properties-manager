@@ -137,9 +137,15 @@ export const listAllProfiles = (): void => {
 };
 
 const MUST_DEFINE = "Parameter '%s' must be defined";
-export const assertDefined = (value: string, name: string): void => {
+const CANT_BE_EMPTY = "Parameter '%s' cannot be empty";
+export const assertNotNullOrEmpty = (value: string, name: string): void => {
     if (!value) {
         console.log(chalk.red(MUST_DEFINE), name);
+        process.exit(1);
+    }
+
+    if (value.length == 0 || value.trim().length == 0) {
+        console.log(chalk.red(CANT_BE_EMPTY), name);
         process.exit(1);
     }
 };

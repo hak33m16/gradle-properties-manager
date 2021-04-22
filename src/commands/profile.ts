@@ -7,9 +7,9 @@ const program = new Command();
 program
     .command('create [name]')
     .description('Add a new profile with the given name')
-    .action((name) => {
+    .action((name: string) => {
         common.assertGpmInitialized();
-        common.assertDefined(name, 'name');
+        common.assertNotNullOrEmpty(name, 'name');
 
         common.createProfile(name);
         common.setProfile(name, true);
@@ -18,9 +18,9 @@ program
 program
     .command('delete [name]')
     .description('Remove an existing profile with the given name')
-    .action((name) => {
+    .action((name: string) => {
         common.assertGpmInitialized();
-        common.assertDefined(name, 'name');
+        common.assertNotNullOrEmpty(name, 'name');
 
         common.deleteProfile(name, true);
     });
