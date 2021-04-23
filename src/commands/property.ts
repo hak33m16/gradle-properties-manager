@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import { Command, Option } from 'commander';
 import inquirer from 'inquirer';
+import { PropertiesFile } from '../properties/properties';
 import { handleSet } from './property/set-cli';
 
 const program = new Command();
@@ -26,7 +27,11 @@ This will be shared across all profiles'
 program
     .command('unset [key]')
     .description('Remove the entry for a given property key')
-    .action((name, options) => {});
+    .action((name, options) => {
+        const props = '/home/abadran/test-gradle-project/gradle.properties';
+        const file: PropertiesFile = new PropertiesFile(props);
+        file.load();
+    });
 
 program
     .command('get [key]')

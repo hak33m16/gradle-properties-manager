@@ -34,10 +34,12 @@ program
         common.listAllProfiles();
     });
 
-program.action(() => {
-    common.assertGpmInitialized();
+program
+    .action(() => {
+        common.assertGpmInitialized();
 
-    console.log(common.getCurrentProfileName());
-});
+        console.log(common.getCurrentProfileName());
+    })
+    .description('Get the name of the current profile');
 
 program.parse(process.argv);
