@@ -7,6 +7,11 @@ export enum PropertyType {
     secret = 'secret',
 }
 
+export enum PropertiesFormat {
+    gpm = 'gpm',
+    gradle = 'gradle',
+}
+
 export class Property {
     public key: string;
     public value: string;
@@ -27,9 +32,14 @@ export class PropertiesFile {
     private path: fs.PathLike;
     private properties: Map<string, Property> = new Map();
     private loaded: boolean = false;
+    private format: PropertiesFormat;
 
-    constructor(path: fs.PathLike) {
+    constructor(
+        path: fs.PathLike,
+        format: PropertiesFormat = PropertiesFormat.gpm
+    ) {
         this.path = path;
+        this.format = format;
     }
 
     private assertLoaded() {
@@ -39,15 +49,16 @@ export class PropertiesFile {
         }
     }
 
-    load = (): PropertiesFile => {
+    public load = (): PropertiesFile => {
         this.properties = propertiesUtils.handleLoad(this.path);
         this.loaded = true;
         return this;
     };
 
-    save = (): PropertiesFile => {
+    public save = (): PropertiesFile => {
         this.assertLoaded();
-        propertiesUtils.handleSave(this.properties, this.path);
+
+        propertiesUtils.handleSave(this.properties, this.path, this.format);
         return this;
     };
 
@@ -61,12 +72,45 @@ export class PropertiesFile {
     }
 
     /**
+     * getProperties
+     */
+    public getProperties(): Map<string, Property> {
+        this.assertLoaded();
+
+        return this.properties;
+    }
+
+    /**
      * setProperty
      */
     public setProperty(key: string, property: Property): PropertiesFile {
         this.assertLoaded();
 
         this.properties.set(key, property);
+        return this;
+    }
+
+    /**
+     * addProperties
+     */
+    public addProperties(file: PropertiesFile): PropertiesFile {
+        this.assertLoaded();
+
+        file.getProperties().forEach((prop, key) => {
+            this.properties.set(key, prop);
+        });
+
+        return this;
+    }
+
+    /**
+     * addProperties
+     */
+    public setProperties(file: PropertiesFile): PropertiesFile {
+        this.assertLoaded();
+
+        this.properties = file.getProperties();
+
         return this;
     }
 

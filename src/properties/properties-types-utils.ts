@@ -5,7 +5,7 @@ import * as constants from '../constants';
 import * as messages from './properties-types-text';
 import * as common from '../common';
 
-import { Property, PropertyType } from './properties-types';
+import { PropertiesFormat, Property, PropertyType } from './properties-types';
 import { PathLike } from 'node:fs';
 
 const locations = (substring: string, str: string): number[] => {
@@ -68,6 +68,8 @@ export const handleLoad = (
     // Deserialize all property entries into a Property object
     for (let i = 0; i < lines.length; ++i) {
         if (Array.isArray(lines[i])) {
+            const key = lines[i][0];
+
             let type = PropertyType.default;
 
             const previousLine = lines[i - 1];
@@ -80,10 +82,20 @@ export const handleLoad = (
                 }
             }
 
-            properties.set(
-                lines[i][0],
-                new Property(lines[i][0], lines[i][1], type)
-            );
+            let value: string = lines[i][1];
+            switch (type) {
+                case PropertyType.default:
+                    break;
+                case PropertyType.secret:
+                    value = Buffer.from(value, 'base64').toString();
+                    break;
+                default:
+                    throw new Error(
+                        `Cannot load unrecognized property type: ${type}`
+                    );
+            }
+
+            properties.set(key, new Property(key, value, type));
         }
     }
 
@@ -92,28 +104,39 @@ export const handleLoad = (
 
 export const handleSave = (
     properties: Map<string, Property>,
-    path: PathLike
+    path: PathLike,
+    format: PropertiesFormat
 ): void => {
     const lines: string[] = [constants.GPM_ANNOTATION];
     properties.forEach((prop) => {
-        switch (prop.type) {
-            case PropertyType.default:
-                lines.push(
-                    prop.key +
-                        ` ${constants.PROPERTIES_SEPARATOR} ` +
-                        prop.value
-                );
-                break;
-            case PropertyType.secret:
-                lines.push(common.getPropertyTypeAnnotation(prop.type));
-                lines.push(
-                    prop.key +
-                        ` ${constants.PROPERTIES_SEPARATOR} ` +
-                        Buffer.from(prop.value).toString('base64')
-                );
-                break;
-            default:
-                throw Error(`Can't save unknown property type: ${prop.type}`);
+        if (format == PropertiesFormat.gpm) {
+            switch (prop.type) {
+                case PropertyType.default:
+                    lines.push(
+                        prop.key +
+                            ` ${constants.PROPERTIES_SEPARATOR} ` +
+                            prop.value
+                    );
+                    break;
+                case PropertyType.secret:
+                    lines.push(common.getPropertyTypeAnnotation(prop.type));
+                    lines.push(
+                        prop.key +
+                            ` ${constants.PROPERTIES_SEPARATOR} ` +
+                            Buffer.from(prop.value).toString('base64')
+                    );
+                    break;
+                default:
+                    throw Error(
+                        `Can't save unknown property type: ${prop.type}`
+                    );
+            }
+        } else if (format == PropertiesFormat.gradle) {
+            lines.push(
+                prop.key + ` ${constants.PROPERTIES_SEPARATOR} ` + prop.value
+            );
+        } else {
+            throw Error("Can't save unrecognized properties file format");
         }
     });
 

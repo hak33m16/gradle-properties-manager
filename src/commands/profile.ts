@@ -7,11 +7,21 @@ const program = new Command();
 program
     .command('create [name]')
     .description('Add a new profile with the given name')
-    .action((name: string) => {
+    .action(async (name: string) => {
         common.assertGpmInitialized();
-        common.assertNotNullOrEmpty(name, 'name');
 
-        common.createProfile(name);
+        name = await common.resolveArg(name, 'name');
+        common.createProfile(name, true);
+        common.setProfile(name, true);
+    });
+
+program
+    .command('set [name]')
+    .description('Switch to an existing profile')
+    .action(async (name: string) => {
+        common.assertGpmInitialized();
+
+        name = await common.resolveArg(name, 'name');
         common.setProfile(name, true);
     });
 
@@ -20,7 +30,6 @@ program
     .description('Remove an existing profile with the given name')
     .action((name: string) => {
         common.assertGpmInitialized();
-        common.assertNotNullOrEmpty(name, 'name');
 
         common.deleteProfile(name, true);
     });

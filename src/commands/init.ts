@@ -66,12 +66,6 @@ const backupExistingPropertiesFile = async (): Promise<void> => {
         } else {
             console.log(BACKUP_CREATED);
         }
-
-        fs.writeFileSync(
-            constants.GRADLE_PROPERTIES_FILE_LOCATION,
-            constants.GPM_ANNOTATION,
-            { encoding: 'utf-8' }
-        );
     }
 };
 
@@ -108,6 +102,13 @@ export const handleInit = async (): Promise<void> => {
     if (fs.existsSync(constants.GRADLE_PROPERTIES_FILE_LOCATION)) {
         await backupExistingPropertiesFile();
     }
+
+    // Create gpm-controlled gradle.properties file
+    fs.writeFileSync(
+        constants.GRADLE_PROPERTIES_FILE_LOCATION,
+        constants.GPM_ANNOTATION,
+        { encoding: 'utf-8' }
+    );
 
     fs.mkdirSync(constants.GPM_HOME_PATH);
     await createInitialProfile();

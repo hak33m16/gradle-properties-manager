@@ -5,7 +5,12 @@ import path from 'path';
 import chalk from 'chalk';
 
 import * as constants from './constants';
-import { PropertyType } from './properties/properties-types';
+import {
+    PropertiesFile,
+    PropertiesFormat,
+    PropertyType,
+} from './properties/properties-types';
+import inquirer from 'inquirer';
 
 const PROFILE_SWITCHED = 'Profile switched to: %s';
 const PROFILE_SWITCH_FAILED =
@@ -15,12 +20,15 @@ const PROFILE_DOESNT_EXIST = "Profile '%s' does not exist";
 const CANT_DELETE_CURRENT_PROFILE =
     "Can't delete profile '%s' as that's the current profile";
 const PROFILE_DELETED = 'Sucessfully deleted profile: %s';
+const PROFILE_CREATED = 'Successfully created profile: %s';
 
 export const log = (message: string, level: number): void => {
     console.log(message, level);
 };
 
 export const getCurrentProfileName = (): string => {
+    assertGpmInitialized();
+
     return fs.readFileSync(constants.GPM_CURRENT_PROFILE_FILE_LOCATION, {
         encoding: 'utf-8',
     });
@@ -58,7 +66,7 @@ export const createGlobalProfile = (): void => {
     }
 };
 
-export const createProfile = (profile: string): void => {
+export const createProfile = (profile: string, alert = false): void => {
     if (profileExists(profile)) {
         console.log(chalk.red(PROFILE_ALREADY_EXISTS), profile);
         process.exit(1);
@@ -71,6 +79,10 @@ export const createProfile = (profile: string): void => {
             constants.GPM_ANNOTATION,
             { encoding: 'utf-8' }
         );
+    }
+
+    if (alert) {
+        console.log(chalk.green(PROFILE_CREATED), profile);
     }
 };
 
@@ -91,17 +103,34 @@ export const deleteProfile = (profile: string, alert = false): boolean => {
     return true;
 };
 
+export const compileGradleProperties = (profile: string): void => {
+    const profilePropertiesFile = new PropertiesFile(
+        getProfilePropertiesPath(profile)
+    ).load();
+
+    new PropertiesFile(
+        constants.GRADLE_PROPERTIES_FILE_LOCATION,
+        PropertiesFormat.gradle
+    )
+        .load()
+        .setProperties(profilePropertiesFile)
+        .save();
+};
+
 export const setProfile = (profile: string, alert = false): void => {
     if (profileExists(profile)) {
         fs.writeFileSync(constants.GPM_CURRENT_PROFILE_FILE_LOCATION, profile);
         // TODO: Overwrite the content of gradle.properties with those
         // inside of this profile + global
-        if (alert) {
-            console.log(chalk.green(PROFILE_SWITCHED), profile);
-        }
     } else {
         console.log(chalk.red(PROFILE_SWITCH_FAILED), profile);
         process.exit(1);
+    }
+
+    compileGradleProperties(profile);
+
+    if (alert) {
+        console.log(chalk.green(PROFILE_SWITCHED), profile);
     }
 };
 
@@ -211,4 +240,39 @@ export const getAnnotationPropertyType = (annotation: string): PropertyType => {
             constants.PROPERTIES_SEPARATOR
         )[1] as keyof typeof PropertyType
     ];
+};
+
+export const format = (str: string, ...args: any[]): string => {
+    const marker = '%s';
+
+    let formattedStr = str;
+    args.forEach((arg) => {
+        formattedStr = formattedStr.replace(marker, arg?.toString());
+    });
+
+    return formattedStr;
+};
+
+export const genericPrompt = async (message: string): Promise<string> => {
+    const { value } = await inquirer.prompt([
+        {
+            type: 'input',
+            name: 'value',
+            message: message,
+        },
+    ]);
+
+    if (!value) {
+        console.log(chalk.red('Must provide a value'));
+    }
+
+    return value;
+};
+
+export const ENTER_ARG_VALUE = "Provide a value for arg '%s':";
+export const resolveArg = async (
+    value: string,
+    name: string
+): Promise<string> => {
+    return value ? value : await genericPrompt(format(ENTER_ARG_VALUE, name));
 };
