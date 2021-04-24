@@ -109,10 +109,7 @@ export const handleInit = async (): Promise<void> => {
         await backupExistingPropertiesFile();
     }
 
-    fs.mkdirSync(constants.GPM_HOME_DIRECTORY_LOCATION);
+    fs.mkdirSync(constants.GPM_HOME_PATH);
     await createInitialProfile();
     common.createGlobalProfile();
-
-    // console.log('Current profile:', getCurrentProfileName());
-    // console.log('All profiles:', getAllProfiles());
 };

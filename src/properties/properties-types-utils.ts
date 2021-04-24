@@ -1,34 +1,12 @@
+import chalk from 'chalk';
 import * as fs from 'fs';
 
-import chalk from 'chalk';
-
 import * as constants from '../constants';
+import * as messages from './properties-types-text';
+import * as common from '../common';
 
-const NOT_LOADED = "Properties file '%s' has not been loaded yet";
-const FILE_DOESNT_EXIST = "File '%s' does not exist";
-const PROPERTY_ALREADY_EXISTS =
-    "Property '%s' already exists, can't recreate it";
-
-export enum PropertyType {
-    default = 'default',
-    secret = 'secret',
-}
-
-export class Property {
-    public key: string;
-    public value: string;
-    public type: PropertyType;
-
-    constructor(
-        key: string,
-        value: string,
-        type: PropertyType = PropertyType.default
-    ) {
-        this.key = key;
-        this.value = value;
-        this.type = type;
-    }
-}
+import { Property, PropertyType } from './properties-types';
+import { PathLike } from 'node:fs';
 
 const locations = (substring: string, str: string): number[] => {
     const numbers: number[] = [];
@@ -43,9 +21,11 @@ const locations = (substring: string, str: string): number[] => {
 // https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html#load(java.io.Reader)
 //
 // Currently only supports a very small subset of the spec
-const handleLoad = (propertiesPath: fs.PathLike): Map<string, Property> => {
+export const handleLoad = (
+    propertiesPath: fs.PathLike
+): Map<string, Property> => {
     if (!fs.existsSync(propertiesPath)) {
-        console.log(chalk.red(FILE_DOESNT_EXIST), propertiesPath);
+        console.log(chalk.red(messages.FILE_DOESNT_EXIST), propertiesPath);
         process.exit(1);
     }
 
@@ -55,13 +35,14 @@ const handleLoad = (propertiesPath: fs.PathLike): Map<string, Property> => {
         })
         .trim();
 
+    // Split properties file string into comment strings & property k/v arrays
     const lines = propertiesFileStr.split(/[\r?\n]+/).map((line) => {
         if (line.startsWith(constants.PROPERTIES_COMMENT)) {
             return line;
         }
 
         const separatorLocations = locations(
-            constants.PROPERTIES_SPLITTER,
+            constants.PROPERTIES_SEPARATOR,
             line
         );
         // Account for escaped separators
@@ -84,6 +65,7 @@ const handleLoad = (propertiesPath: fs.PathLike): Map<string, Property> => {
     });
 
     const properties: Map<string, Property> = new Map();
+    // Deserialize all property entries into a Property object
     for (let i = 0; i < lines.length; ++i) {
         if (Array.isArray(lines[i])) {
             let type = PropertyType.default;
@@ -108,70 +90,32 @@ const handleLoad = (propertiesPath: fs.PathLike): Map<string, Property> => {
     return properties;
 };
 
-export class PropertiesFile {
-    private path: fs.PathLike;
-    private properties: Map<string, Property> = new Map();
-    private loaded: boolean = false;
-
-    constructor(path: fs.PathLike) {
-        this.path = path;
-    }
-
-    load = (): void => {
-        this.properties = handleLoad(this.path);
-        this.loaded = true;
-    };
-
-    save = (): void => {
-        if (!this.loaded) {
-            console.log(chalk.red(NOT_LOADED), this.path);
+export const handleSave = (
+    properties: Map<string, Property>,
+    path: PathLike
+): void => {
+    const lines: string[] = [constants.GPM_ANNOTATION];
+    properties.forEach((prop) => {
+        switch (prop.type) {
+            case PropertyType.default:
+                lines.push(
+                    prop.key +
+                        ` ${constants.PROPERTIES_SEPARATOR} ` +
+                        prop.value
+                );
+                break;
+            case PropertyType.secret:
+                lines.push(common.getPropertyTypeAnnotation(prop.type));
+                lines.push(
+                    prop.key +
+                        ` ${constants.PROPERTIES_SEPARATOR} ` +
+                        Buffer.from(prop.value).toString('base64')
+                );
+                break;
+            default:
+                throw Error(`Can't save unknown property type: ${prop.type}`);
         }
+    });
 
-        // TODO: Implement .properties file serializer
-    };
-
-    /**
-     * getProperty
-     */
-    public getProperty(key: string): Property | undefined {
-        return this.properties.get(key);
-    }
-
-    /**
-     * setProperty
-     */
-    public setProperty(key: string, property: Property): void {
-        this.properties.set(key, property);
-    }
-
-    /**
-     * getPropertyValue
-     */
-    public getPropertyValue(key: string): string | undefined {
-        if (!this.loaded) {
-            console.log(chalk.red(NOT_LOADED), this.path);
-        }
-
-        return this.properties.get(key)?.value;
-    }
-
-    /**
-     * setPropertyValue
-     */
-    public setPropertyValue(
-        key: string,
-        value: string,
-        type: PropertyType = PropertyType.default
-    ): void {
-        if (!this.loaded) {
-            console.log(chalk.red(NOT_LOADED), this.path);
-        }
-
-        const prop = this.properties.get(key);
-        if (prop) {
-            prop.value = value;
-        } else {
-            this.properties.set(key, new Property(key, value, type));
-        }
-    }
-}
+    fs.writeFileSync(path, lines.join('\n'), { encoding: 'utf-8' });
+};

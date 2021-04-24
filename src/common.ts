@@ -1,10 +1,11 @@
 import fs from 'fs';
-import { Dirent } from 'node:fs';
+import { Dirent, PathLike } from 'node:fs';
 import path from 'path';
 
 import chalk from 'chalk';
 
 import * as constants from './constants';
+import { PropertyType } from './properties/properties-types';
 
 const PROFILE_SWITCHED = 'Profile switched to: %s';
 const PROFILE_SWITCH_FAILED =
@@ -27,20 +28,20 @@ export const getCurrentProfileName = (): string => {
 
 export const getProfileFileLocation = (profile: string): string => {
     return path.join(
-        constants.GPM_HOME_DIRECTORY_LOCATION,
+        constants.GPM_HOME_PATH,
         `${profile}.${constants.PROPERTIES_FILE_EXTENSION}`
     );
 };
 
 export const profileExists = (profile: string): boolean => {
-    if (profile == constants.GPM_GLOBAL_PROPERTIES_PROFILE) {
+    if (profile == constants.GPM_GLOBAL_PROFILE_NAME) {
         throw new Error(
             `'${profile}' is not a valid profile, it's the global properties store`
         );
     }
 
     const profileLocation: string = path.join(
-        constants.GPM_HOME_DIRECTORY_LOCATION,
+        constants.GPM_HOME_PATH,
         `${profile}.${constants.PROPERTIES_FILE_EXTENSION}`
     );
 
@@ -64,7 +65,7 @@ export const createProfile = (profile: string): void => {
     } else {
         fs.writeFileSync(
             path.join(
-                constants.GPM_HOME_DIRECTORY_LOCATION,
+                constants.GPM_HOME_PATH,
                 `${profile}.${constants.PROPERTIES_FILE_EXTENSION}`
             ),
             constants.GPM_ANNOTATION,
@@ -105,12 +106,9 @@ export const setProfile = (profile: string, alert = false): void => {
 };
 
 export const getAllProfileNames = (): string[] => {
-    const gpmHomeFiles: Dirent[] = fs.readdirSync(
-        constants.GPM_HOME_DIRECTORY_LOCATION,
-        {
-            withFileTypes: true,
-        }
-    );
+    const gpmHomeFiles: Dirent[] = fs.readdirSync(constants.GPM_HOME_PATH, {
+        withFileTypes: true,
+    });
     const profiles: string[] = gpmHomeFiles
         .filter((dir: Dirent): boolean => {
             return (
@@ -156,7 +154,7 @@ export const gpmInitialized = (): boolean => {
     // necessarily mean there's an active profile and respective
     // gpm-controlled gradle.properties file
 
-    if (fs.existsSync(constants.GPM_HOME_DIRECTORY_LOCATION)) {
+    if (fs.existsSync(constants.GPM_HOME_PATH)) {
         return true;
     }
 
@@ -185,8 +183,32 @@ export const assertGpmInitialized = (): void => {
     }
 };
 
-export const writePropertyToProfile = (
-    profile: string,
-    key: string,
-    value: string
-): void => {};
+export const getCurrentProfilePropertiesPath = (): PathLike => {
+    return path.join(
+        constants.GPM_HOME_PATH,
+        `${getCurrentProfileName()}.${constants.PROPERTIES_FILE_EXTENSION}`
+    );
+};
+
+export const getProfilePropertiesPath = (profile: string): PathLike => {
+    return path.join(
+        constants.GPM_HOME_PATH,
+        `${profile}.${constants.PROPERTIES_FILE_EXTENSION}`
+    );
+};
+
+export const getPropertyTypeAnnotation = (type: PropertyType): string => {
+    return (
+        constants.GPM_TYPE_ANNOTATION +
+        constants.PROPERTIES_SEPARATOR +
+        type.toString()
+    );
+};
+
+export const getAnnotationPropertyType = (annotation: string): PropertyType => {
+    return PropertyType[
+        annotation.split(
+            constants.PROPERTIES_SEPARATOR
+        )[1] as keyof typeof PropertyType
+    ];
+};
