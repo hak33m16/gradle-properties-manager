@@ -38,3 +38,4 @@ export const PROPERTIES_SEPARATOR = '=';
 // https://docs.oracle.com/javase/7/docs/api/java/util/Properties.html#load(java.io.Reader)
 export const GPM_ANNOTATION = '#@gpm';
 export const GPM_TYPE_ANNOTATION = '#@gpm-type';
+export const GPM_API_VERSION_ANNOTATION = '#@gpm-api=v0beta1';

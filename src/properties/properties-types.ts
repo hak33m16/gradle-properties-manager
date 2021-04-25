@@ -115,6 +115,15 @@ export class PropertiesFile {
     }
 
     /**
+     * removeProperty
+     */
+    public removeProperty(key: string): PropertiesFile {
+        this.properties.delete(key);
+
+        return this;
+    }
+
+    /**
      * getPropertyValue
      */
     public getPropertyValue(key: string): string | undefined {

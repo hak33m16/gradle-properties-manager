@@ -60,13 +60,15 @@ export const createGlobalProfile = (): void => {
     if (!fs.existsSync(constants.GPM_GLOBAL_PROPERTIES_FILE_LOCATION)) {
         fs.writeFileSync(
             constants.GPM_GLOBAL_PROPERTIES_FILE_LOCATION,
-            constants.GPM_ANNOTATION,
+            `${constants.GPM_ANNOTATION}\n${constants.GPM_API_VERSION_ANNOTATION}`,
             { encoding: 'utf-8' }
         );
     }
 };
 
 export const createProfile = (profile: string, alert = false): void => {
+    // TODO: Add in file name validation
+
     if (profileExists(profile)) {
         console.log(chalk.red(PROFILE_ALREADY_EXISTS), profile);
         process.exit(1);
@@ -76,7 +78,7 @@ export const createProfile = (profile: string, alert = false): void => {
                 constants.GPM_HOME_PATH,
                 `${profile}.${constants.PROPERTIES_FILE_EXTENSION}`
             ),
-            constants.GPM_ANNOTATION,
+            `${constants.GPM_ANNOTATION}\n${constants.GPM_API_VERSION_ANNOTATION}`,
             { encoding: 'utf-8' }
         );
     }
@@ -108,20 +110,23 @@ export const compileGradleProperties = (profile: string): void => {
         getProfilePropertiesPath(profile)
     ).load();
 
+    const global = new PropertiesFile(
+        constants.GPM_GLOBAL_PROPERTIES_FILE_LOCATION
+    ).load();
+
     new PropertiesFile(
         constants.GRADLE_PROPERTIES_FILE_LOCATION,
         PropertiesFormat.gradle
     )
         .load()
-        .setProperties(profilePropertiesFile)
+        .setProperties(global)
+        .addProperties(profilePropertiesFile)
         .save();
 };
 
 export const setProfile = (profile: string, alert = false): void => {
     if (profileExists(profile)) {
         fs.writeFileSync(constants.GPM_CURRENT_PROFILE_FILE_LOCATION, profile);
-        // TODO: Overwrite the content of gradle.properties with those
-        // inside of this profile + global
     } else {
         console.log(chalk.red(PROFILE_SWITCH_FAILED), profile);
         process.exit(1);
@@ -154,11 +159,11 @@ export const getAllProfileNames = (): string[] => {
 export const listAllProfiles = (): void => {
     const currentProfile = getCurrentProfileName();
     const profiles = getAllProfileNames();
+
+    console.log(chalk.cyanBright.bold(currentProfile));
     profiles.forEach((profile) => {
         if (profile != currentProfile) {
             console.log(chalk.blueBright(profile));
-        } else {
-            console.log(chalk.cyanBright.bold(profile));
         }
     });
 };

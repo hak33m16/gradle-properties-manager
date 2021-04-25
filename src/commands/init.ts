@@ -106,11 +106,11 @@ export const handleInit = async (): Promise<void> => {
     // Create gpm-controlled gradle.properties file
     fs.writeFileSync(
         constants.GRADLE_PROPERTIES_FILE_LOCATION,
-        constants.GPM_ANNOTATION,
+        `${constants.GPM_ANNOTATION}\n${constants.GPM_API_VERSION_ANNOTATION}`,
         { encoding: 'utf-8' }
     );
 
     fs.mkdirSync(constants.GPM_HOME_PATH);
-    await createInitialProfile();
     common.createGlobalProfile();
+    await createInitialProfile();
 };

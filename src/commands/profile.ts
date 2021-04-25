@@ -31,6 +31,8 @@ program
     .action((name: string) => {
         common.assertGpmInitialized();
 
+        // TODO: Add in a confirmation prompt to this (with a --force flag
+        // option in order to not be prompted)
         common.deleteProfile(name, true);
     });
 

@@ -1,9 +1,9 @@
-import chalk from 'chalk';
-import { Command, Option } from 'commander';
-import inquirer from 'inquirer';
-import { PropertiesFile } from '../properties/properties-types';
+import { Command } from 'commander';
+
 import { handleSet } from './property/set-cli';
 import { handleGet } from './property/get-cli';
+import { handleUnset } from './property/unset-cli';
+import { handleLs } from './property/ls-cli';
 import * as common from '../common';
 
 const program = new Command();
@@ -42,7 +42,7 @@ program
         'Removes the property to a specific profile, ignoring the current one',
         common.getCurrentProfileName()
     )
-    .action((key) => {});
+    .action(handleUnset);
 
 program
     .command('get [key]')
@@ -58,7 +58,7 @@ program
     )
     .option(
         '-d, --decode',
-        'Decodes the property if it was a secret, NOOP otherwise',
+        'Decodes the property if it was a secret, NOP otherwise',
         false
     )
     .description('Get the value associated with a given property key')
@@ -69,8 +69,7 @@ program
     .description('List all properties on a given profile')
     .option(
         '-g, --global',
-        'Saves the property to the global properties scope. \
-This will be shared across all profiles',
+        'The list will include properties in the global scope',
         false
     )
     .option(
@@ -78,6 +77,6 @@ This will be shared across all profiles',
         'Saves the property to a specific profile, ignoring the current one',
         common.getCurrentProfileName()
     )
-    .action((options) => {});
+    .action(handleLs);
 
 program.parse(process.argv);

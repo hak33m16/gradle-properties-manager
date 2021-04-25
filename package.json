@@ -31,10 +31,13 @@
         "del": "^6.0.0",
         "esm": "^3.2.25",
         "inquirer": "^8.0.0",
+        "strip-ansi": "^6.0.0",
+        "text-table": "^0.2.0",
         "ts-node": "^9.1.1",
         "uuid": "^8.3.2"
     },
     "devDependencies": {
+        "@types/text-table": "^0.2.1",
         "@types/inquirer": "^7.3.1",
         "@types/jest": "^26.0.22",
         "@types/node": "^14.14.37",

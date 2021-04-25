@@ -22,5 +22,6 @@ export const handleGet = async (
         console.log(value);
     } else {
         console.log(chalk.red(messages.NOT_FOUND), key);
+        process.exit(1);
     }
 };

@@ -26,7 +26,6 @@ export const handleSet = async (
         console.log(chalk.green(messages.SUCCESSFUL_PROP_ADDED), key, profile);
     } catch (ERROR) {
         console.log(chalk.red(ERROR));
+        process.exit(1);
     }
-
-    // TODO: Still need to "recompile" ~/.gradle/gradle.properties after set
 };

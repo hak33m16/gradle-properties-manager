@@ -107,7 +107,10 @@ export const handleSave = (
     path: PathLike,
     format: PropertiesFormat
 ): void => {
-    const lines: string[] = [constants.GPM_ANNOTATION];
+    const lines: string[] = [
+        constants.GPM_ANNOTATION,
+        constants.GPM_API_VERSION_ANNOTATION,
+    ];
     properties.forEach((prop) => {
         if (format == PropertiesFormat.gpm) {
             switch (prop.type) {
