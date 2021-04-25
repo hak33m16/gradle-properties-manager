@@ -12,8 +12,8 @@ program
     .command('set [key] [value]')
     .description('Add a new property with the given name')
     .option(
-        '-s, --secret',
-        'User will be silently prompted for the value, and it will be base64 encoded',
+        '-e, --encode',
+        'Property will be base64 encoded. If the value is omitted, user will be silently prompted',
         false
     )
     .option(

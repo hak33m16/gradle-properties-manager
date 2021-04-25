@@ -134,10 +134,6 @@ export const handleSave = (
                         `Can't save unknown property type: ${prop.type}`
                     );
             }
-        } else if (format == PropertiesFormat.gradle) {
-            lines.push(
-                prop.key + ` ${constants.PROPERTIES_SEPARATOR} ` + prop.value
-            );
         } else {
             throw Error("Can't save unrecognized properties file format");
         }

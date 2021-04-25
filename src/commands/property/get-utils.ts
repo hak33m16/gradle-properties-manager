@@ -5,6 +5,7 @@ import {
 } from '../../properties/properties-types';
 import * as common from '../../common';
 import * as constants from '../../constants';
+import chalk from 'chalk';
 
 export const getPropertyValue = (
     key: string,
@@ -30,8 +31,8 @@ export const getPropertyValue = (
         case PropertyType.default:
             return property.value;
         case PropertyType.secret:
-            return decode
-                ? Buffer.from(property.value, 'base64').toString()
-                : property.value;
+            // No actual decoding has to happen since property values aren't
+            // encoded while in the Property object
+            return decode ? property.value : chalk.gray('(secret)');
     }
 };

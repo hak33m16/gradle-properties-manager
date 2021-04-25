@@ -18,6 +18,8 @@ export const listProperties = (profile: string, global: boolean): void => {
     ).load();
 
     let globalPropertyWasOverridden = false;
+    let propertyWasMasked = false;
+    let secretWasMasked = false;
 
     const getPropertiesTable = (
         file: PropertiesFile,
@@ -37,12 +39,34 @@ export const listProperties = (profile: string, global: boolean): void => {
             const key = overriddenByProfile
                 ? `${prop.key} ${chalk.blueBright('(*)')}`
                 : prop.key;
-            const value =
-                prop.type == PropertyType.secret
-                    ? `${Buffer.from(prop.value).toString(
-                          'base64'
-                      )} ${chalk.gray('(secret)')}`
-                    : prop.value;
+
+            let value: string;
+            switch (prop.type) {
+                case PropertyType.secret:
+                    prop.type == PropertyType.secret;
+                    value = chalk.gray('(secret)');
+                    secretWasMasked = true;
+                    break;
+                case PropertyType.default:
+                    value = prop.value;
+                    for (const str of constants.SENSITIVE_KEY_PATTERNS) {
+                        if (
+                            prop.key.toLowerCase().includes(str.toLowerCase())
+                        ) {
+                            value = `${prop.value.replace(
+                                /./g,
+                                '*'
+                            )} ${chalk.gray('(masked)')}`;
+                            propertyWasMasked = true;
+                            break;
+                        }
+                    }
+                    break;
+                default:
+                    throw Error(
+                        `Can't display unknown property type: ${prop.type}`
+                    );
+            }
             propertiesList.push([key, value]);
         });
 
@@ -66,8 +90,33 @@ export const listProperties = (profile: string, global: boolean): void => {
         })
     );
 
+    const legend: string[][] = [];
     if (globalPropertyWasOverridden) {
+        legend.push([chalk.blueBright('*'), 'overriding global property']);
+    }
+    if (propertyWasMasked) {
+        legend.push([
+            chalk.blueBright('masked'),
+            `${chalk.cyan(
+                'key'
+            )} name contained one of the following patterns: ${chalk.cyanBright(
+                constants.SENSITIVE_KEY_PATTERNS.join(' ')
+            )}`,
+        ]);
+    }
+    if (secretWasMasked) {
+        legend.push([
+            chalk.blueBright('secret'),
+            `property was set with ${chalk.cyanBright('--encode')} flag`,
+        ]);
+    }
+
+    if (legend.length > 0) {
         console.log();
-        console.log(chalk.blueBright('*'), '=', 'overriding global property');
+        console.log(
+            table(legend, {
+                stringLength: (s) => stripAnsi(s).length,
+            })
+        );
     }
 };

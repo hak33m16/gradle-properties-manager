@@ -69,7 +69,19 @@ Commands:
 
 ### Managing Properties
 
-### Examples
+```
+Usage: gradle-properties-manager-property [options] [command]
+
+Options:
+  -h, --help                   display help for command
+
+Commands:
+  set [options] [key] [value]  Add a new property with the given name
+  unset [options] [key]        Remove the entry for a given property key
+  get [options] [key]          Get the value associated with a given property key
+  ls [options]                 List all properties on a given profile
+  help [command]               display help for command
+```
 
 ## Shell Integration
 

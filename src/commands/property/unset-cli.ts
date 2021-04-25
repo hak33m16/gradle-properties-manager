@@ -11,7 +11,6 @@ export const handleUnset = async (
     common.assertGpmInitialized();
 
     const { global, profile } = options;
-
     if (global && profile != common.getCurrentProfileName()) {
         console.log(chalk.red(messages.INVALID_OPTIONS));
         process.exit(1);
@@ -27,7 +26,7 @@ export const handleUnset = async (
         console.log(
             chalk.green(messages.SUCCESSFUL_PROP_REMOVAL),
             key,
-            profile
+            global ? 'global' : profile
         );
     } catch (ERROR) {
         console.log(chalk.red(ERROR));

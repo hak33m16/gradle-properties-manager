@@ -8,7 +8,7 @@ import * as constants from '../../constants';
 export const setProperty = (
     key: string,
     value: string,
-    secret: boolean,
+    encode: boolean,
     global: boolean,
     profile: string
 ): boolean => {
@@ -24,7 +24,7 @@ export const setProperty = (
             key,
             value,
             // TODO: Consider allowing them to pass in a type string and casting to enum
-            secret ? PropertyType.secret : PropertyType.default
+            encode ? PropertyType.secret : PropertyType.default
         )
         .save();
 

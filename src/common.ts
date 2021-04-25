@@ -116,7 +116,7 @@ export const compileGradleProperties = (profile: string): void => {
 
     new PropertiesFile(
         constants.GRADLE_PROPERTIES_FILE_LOCATION,
-        PropertiesFormat.gradle
+        PropertiesFormat.gpm
     )
         .load()
         .setProperties(global)

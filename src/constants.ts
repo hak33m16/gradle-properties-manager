@@ -39,3 +39,5 @@ export const PROPERTIES_SEPARATOR = '=';
 export const GPM_ANNOTATION = '#@gpm';
 export const GPM_TYPE_ANNOTATION = '#@gpm-type';
 export const GPM_API_VERSION_ANNOTATION = '#@gpm-api=v0beta1';
+// TODO: Consider making this configurable to the user
+export const SENSITIVE_KEY_PATTERNS = ['auth', 'pass'];
