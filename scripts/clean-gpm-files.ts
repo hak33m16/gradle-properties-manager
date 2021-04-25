@@ -37,7 +37,7 @@ const promptDirectoryRemoval = async (directory: string) => {
 };
 
 const main = async (): Promise<void> => {
-    await promptDirectoryRemoval(constants.GPM_HOME_DIRECTORY_LOCATION);
+    await promptDirectoryRemoval(constants.GPM_HOME_PATH);
     await promptFileRemoval(constants.GRADLE_PROPERTIES_FILE_LOCATION);
     await promptFileRemoval(constants.GRADLE_PROPERTIES_BAK_FILE_LOCATION);
 };
