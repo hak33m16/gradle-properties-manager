@@ -12,7 +12,12 @@ program
     .command('set [key] [value]')
     .description('Add a new property with the given name')
     .option(
-        '-e, --encode',
+        '-e, --encoded',
+        'Property will be base64 encoded. If the value is omitted, user will be silently prompted',
+        false
+    )
+    .option(
+        '-m, --masked',
         'Property will be base64 encoded. If the value is omitted, user will be silently prompted',
         false
     )
@@ -59,6 +64,11 @@ program
     .option(
         '-d, --decode',
         'Decodes the property if it was a secret, NOP otherwise',
+        false
+    )
+    .option(
+        '-u, --unmask',
+        'Unmasks the property if it was masked, NOP otherwise',
         false
     )
     .description('Get the value associated with a given property key')

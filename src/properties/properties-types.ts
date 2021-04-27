@@ -5,6 +5,7 @@ import * as propertiesUtils from './properties-types-utils';
 export enum PropertyType {
     default = 'default',
     secret = 'secret',
+    masked = 'masked',
 }
 
 export enum PropertiesFormat {

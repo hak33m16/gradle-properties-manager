@@ -11,10 +11,9 @@ export const getPropertyValue = (
     key: string,
     global: boolean,
     profile: string,
-    decode: boolean
+    decode: boolean,
+    unmask: boolean
 ): string | undefined => {
-    // TODO: Support global properties
-
     const property: Property | undefined = new PropertiesFile(
         global
             ? common.getProfilePropertiesPath(constants.GPM_GLOBAL_PROFILE_NAME)
@@ -34,5 +33,15 @@ export const getPropertyValue = (
             // No actual decoding has to happen since property values aren't
             // encoded while in the Property object
             return decode ? property.value : chalk.gray('(secret)');
+        case PropertyType.masked:
+            return unmask
+                ? property.value
+                : `${property.value.replace(/./g, '*')} ${chalk.gray(
+                      '(masked)'
+                  )}`;
+        default:
+            throw Error(
+                `Can't display unknown property type: ${property.type}`
+            );
     }
 };

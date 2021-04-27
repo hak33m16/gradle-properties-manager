@@ -49,18 +49,12 @@ export const listProperties = (profile: string, global: boolean): void => {
                     break;
                 case PropertyType.default:
                     value = prop.value;
-                    for (const str of constants.SENSITIVE_KEY_PATTERNS) {
-                        if (
-                            prop.key.toLowerCase().includes(str.toLowerCase())
-                        ) {
-                            value = `${prop.value.replace(
-                                /./g,
-                                '*'
-                            )} ${chalk.gray('(masked)')}`;
-                            propertyWasMasked = true;
-                            break;
-                        }
-                    }
+                    break;
+                case PropertyType.masked:
+                    value = `${prop.value.replace(/./g, '*')} ${chalk.gray(
+                        '(masked)'
+                    )}`;
+                    propertyWasMasked = true;
                     break;
                 default:
                     throw Error(
@@ -97,17 +91,13 @@ export const listProperties = (profile: string, global: boolean): void => {
     if (propertyWasMasked) {
         legend.push([
             chalk.blueBright('masked'),
-            `${chalk.cyan(
-                'key'
-            )} name contained one of the following patterns: ${chalk.cyanBright(
-                constants.SENSITIVE_KEY_PATTERNS.join(' ')
-            )}`,
+            `property was set with ${chalk.cyanBright('--masked')} flag`,
         ]);
     }
     if (secretWasMasked) {
         legend.push([
             chalk.blueBright('secret'),
-            `property was set with ${chalk.cyanBright('--encode')} flag`,
+            `property was set with ${chalk.cyanBright('--encoded')} flag`,
         ]);
     }
 

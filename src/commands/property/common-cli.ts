@@ -19,12 +19,13 @@ export const promptKey = async (): Promise<string> => {
 
 export const promptValue = async (
     key: string,
-    secret: boolean
+    secret: boolean,
+    masked: boolean
 ): Promise<string> => {
     const secretPrompt = {
         type: 'password',
         name: 'value',
-        message: messages.ENTER_SECRET_VALUE,
+        message: messages.ENTER_HIDDEN_VALUE,
         mask: '*',
     };
 
@@ -34,7 +35,7 @@ export const promptValue = async (
         message: messages.ENTER_VALUE,
     };
 
-    const prompt = secret ? secretPrompt : publicPrompt;
+    const prompt = secret || masked ? secretPrompt : publicPrompt;
 
     const { value } = await inquirer.prompt([prompt]);
 

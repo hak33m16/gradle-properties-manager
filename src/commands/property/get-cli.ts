@@ -6,18 +6,23 @@ import { getPropertyValue } from './get-utils';
 
 export const handleGet = async (
     keyArg: string,
-    options: { global: boolean; profile: string; decode: boolean }
+    options: {
+        global: boolean;
+        profile: string;
+        decode: boolean;
+        unmask: boolean;
+    }
 ): Promise<void> => {
     common.assertGpmInitialized();
 
-    const { global, profile, decode } = options;
+    const { global, profile, decode, unmask } = options;
 
     let key = keyArg;
     while (!key) {
         key = await propertyCommon.promptKey();
     }
 
-    const value = getPropertyValue(key, global, profile, decode);
+    const value = getPropertyValue(key, global, profile, decode, unmask);
     if (value) {
         console.log(value);
     } else {

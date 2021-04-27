@@ -8,11 +8,17 @@ import * as constants from '../../constants';
 export const setProperty = (
     key: string,
     value: string,
-    encode: boolean,
+    encoded: boolean,
+    masked: boolean,
     global: boolean,
     profile: string
 ): boolean => {
-    // TODO: Support global properties
+    let type: PropertyType = PropertyType.default;
+    if (encoded) {
+        type = PropertyType.secret;
+    } else if (masked) {
+        type = PropertyType.masked;
+    }
 
     new PropertiesFile(
         global
@@ -24,7 +30,7 @@ export const setProperty = (
             key,
             value,
             // TODO: Consider allowing them to pass in a type string and casting to enum
-            encode ? PropertyType.secret : PropertyType.default
+            type
         )
         .save();
 

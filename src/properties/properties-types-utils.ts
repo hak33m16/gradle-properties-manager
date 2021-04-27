@@ -86,6 +86,8 @@ export const handleLoad = (
             switch (type) {
                 case PropertyType.default:
                     break;
+                case PropertyType.masked:
+                    break;
                 case PropertyType.secret:
                     value = Buffer.from(value, 'base64').toString();
                     break;
@@ -116,9 +118,7 @@ export const handleSave = (
             switch (prop.type) {
                 case PropertyType.default:
                     lines.push(
-                        prop.key +
-                            ` ${constants.PROPERTIES_SEPARATOR} ` +
-                            prop.value
+                        `${prop.key} ${constants.PROPERTIES_SEPARATOR} ${prop.value}`
                     );
                     break;
                 case PropertyType.secret:
@@ -127,6 +127,12 @@ export const handleSave = (
                         prop.key +
                             ` ${constants.PROPERTIES_SEPARATOR} ` +
                             Buffer.from(prop.value).toString('base64')
+                    );
+                    break;
+                case PropertyType.masked:
+                    lines.push(common.getPropertyTypeAnnotation(prop.type));
+                    lines.push(
+                        `${prop.key} ${constants.PROPERTIES_SEPARATOR} ${prop.value}`
                     );
                     break;
                 default:
