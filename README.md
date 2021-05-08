@@ -1,78 +1,104 @@
 # Gradle Properties Manager
 
-## About
-
 The globally available `~/.gradle/gradle.properties` is often used to alter values for a particular team or project within organizations. Manual management of this file is cumbersome, so this node module aims to ease that burden.
+
+-   [Gradle Properties Manager](#gradle-properties-manager)
+    -   [Installation](#installation)
+    -   [Usage](#usage)
+        -   [Initialization](#initialization)
+        -   [Managing Profiles](#managing-profiles)
+        -   [Examples](#examples)
+    -   [Shell Integration](#shell-integration)
+        -   [Powerlevel10k](#powerlevel10k)
 
 ## Installation
 
-`npm install -g gradle-properties-manager`
-
-OR
-
-`yarn global add gradle-properties-manager`
+```bash
+npm install -g gradle-properties-manager
+```
 
 ## Usage
 
-Executable available as `gradle-properties-manager` as well as `gpm`
+Executable available as `gradle-properties-manager`
 
-### Initializing the Properties Manager
+It's highly recommended, and will be assumed throughout this guide that you create an alias which points to it called `gpm`. To do this, you can add the following to your `~/.bashrc` or `~/.zshrc`:
 
-When first using the property manager, it's a good idea to back up your current `~/.gradle/gradle.properties` file. The `--init` flag will:
+```bash
+alias gpm='gradle-properties-manager'
+```
 
--   Backup your current `gradle.properties` file to `~/.gradle/gradle.properties.bak`
--   Create a `~/.gpm` folder where your profiles will be stored
+### Overview
+
+```
+Usage: gradle-properties-manager [options] [command]
+
+Options:
+  -h, --help      display help for command
+
+Commands:
+  profile         Manage profiles
+  property        Manage properties
+  init            Initialize gpm for first-time use
+  help [command]  display help for command
+```
+
+Run any of the above commands with the `--help` flag or as `gpm help <command>` for more info on usage
+
+### Initialization
+
+To start using gpm, first run `gpm init`
+
+You'll be taken through a series of prompts where you'll have the option to back up your current `~/.gradle/gradle.properties` file to `~/.gradle/gradle.properties.bak`, as well as move existing properties in your `gradle.properties` file over to gpm
 
 ### Managing Profiles
 
--   To create a profile:
-    `gpm --create-profile my-custom-profile`
+```
+Usage: gradle-properties-manager-profile [options] [command]
 
-_Note: The profile name is just an alias for the `.properties` file that it's stored in. Avoid using slashes or invalid filesystem characters in general for profile names_
+Get the name of the current profile
 
--   To list all available profiles:
-    `gpm --profiles`
+Options:
+  -h, --help     display help for command
 
--   To switch profiles:
-    `gpm --profile my-custom-profile`
+Commands:
+  create [name]  Add a new profile with the given name
+  set [name]     Switch to an existing profile
+  delete [name]  Remove an existing profile with the given name
+  ls             List all known profiles
+```
 
 ### Managing Properties
 
-When a property is added via the CLI, it's automatically added to whatever the current profile is set to:
-`gpm --property myspecialkey=myspecialvalue`
+```
+Usage: gradle-properties-manager-property [options] [command]
 
-In our case, this would set this property inside of our `my-custom-profile.properties` file inside of `~/.gpm`
+Options:
+  -h, --help                   display help for command
 
-If you'd like to add this property to the global profile, just add the `--global` flag when adding via the `--property` argument
+Commands:
+  set [options] [key] [value]  Add a new property with the given name
+  unset [options] [key]        Remove the entry for a given property key
+  get [options] [key]          Get the value associated with a given property key
+  ls [options]                 List all properties on a given profile
+  help [command]               display help for command
+```
 
-## Example Command Layout
+## Shell Integration
 
-> global.properties
-> nexusUrl=myspecialurl.com
+The name of the current profile is always available in `~/.gpm/profile`
 
-> colemeisterzpro.properties
-> // implicitly contains nexusUrl
-> nexusUsername=username
+### Powerlevel10k
 
-gpm profile // displays current profile
+For an easy and immediate addition to your shell, you can add the following to your `~/.zshrc`:
 
-gpm profile create <name> // create a profile with this name
-gpm profile delete <name> // prompts for confirmation of deletion
-gpm profile <name> // list info about one profile
+```
+function prompt_my_gpm_profile() {
+    if [[ -e "$HOME/.gpm/profile" ]] ; then
+        # icon is unicode char 'e738' which is the java icon in nerd fonts
+        p10k segment -i '' -f 208 -t "$(cat ~/.gpm/profile)"
+    fi
+}
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=my_gpm_profile
+```
 
-gpm profile ls // list all profiles
-
----
-
-gpm property ls --global --profile <profilename> // list all current properties on this profile
-
-gpm property set nexusUsername colemeister // <--- goes into profile
-gpm property set nexusUsername colemeister --global // <--- goes into global
-gpm property set nexusUsername --profile <profilename> // <-- set to specific profile
-gpm property set nexusPassword --secret // <-- triggers prompt and base64 encode
-
-gpm property unset nexusUsername --global --profile <profilename>
-
----
-
-gpm version
+However, if you'd like to change the order of your prompt element, you'll have to enter the `my_gpm_profile` signature into the appropriate location in your `~/.p10k.zsh` file's `POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS` array
