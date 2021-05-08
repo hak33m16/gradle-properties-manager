@@ -2,33 +2,9 @@ import fs from 'fs';
 
 import * as constants from '../constants';
 import * as common from '../common';
+import * as messages from './init/init-text';
 
-import chalk from 'chalk';
 import inquirer from 'inquirer';
-
-const BACKUP_PROPERTIES_FILE =
-    chalk.yellow('[WARN]') +
-    ` File '${constants.GRADLE_PROPERTIES_FILE_NAME}' already exists, would \
-you like to create a backup at '${constants.GRADLE_PROPERTIES_FILE_NAME}.bak'?`;
-
-const ALREADY_INITIALIZED = chalk.red(
-    "You've already initialized gradle-properties-manager..."
-);
-
-const BACKUP_FAILED = chalk.red(
-    `Failed to backup existing '${constants.GRADLE_PROPERTIES_FILE_NAME}'...`
-);
-
-const BACKUP_ALREADY_EXISTS = chalk.red(
-    `Backup file '${constants.GRADLE_PROPERTIES_BAK_FILE_NAME}' already exists...`
-);
-
-const BACKUP_CREATED = chalk.green(
-    `Successfully backed up '${constants.GRADLE_PROPERTIES_FILE_NAME}' to \
-'${constants.GRADLE_PROPERTIES_BAK_FILE_NAME}'...`
-);
-
-const CREATE_PROFILE = 'Enter name to use for initial profile';
 
 const copyExistingProperties = async (): Promise<void> => {
     const { backupToProfile } = await inquirer.prompt([
@@ -46,13 +22,13 @@ const backupExistingPropertiesFile = async (): Promise<void> => {
         {
             type: 'confirm',
             name: 'backup',
-            message: BACKUP_PROPERTIES_FILE,
+            message: messages.BACKUP_PROPERTIES_FILE,
         },
     ]);
 
     if (backup) {
         if (fs.existsSync(constants.GRADLE_PROPERTIES_BAK_FILE_LOCATION)) {
-            console.log(BACKUP_ALREADY_EXISTS);
+            console.log(messages.BACKUP_ALREADY_EXISTS);
         }
 
         fs.copyFileSync(
@@ -61,10 +37,10 @@ const backupExistingPropertiesFile = async (): Promise<void> => {
         );
 
         if (!fs.existsSync(constants.GRADLE_PROPERTIES_BAK_FILE_LOCATION)) {
-            console.log(BACKUP_FAILED);
+            console.log(messages.BACKUP_FAILED);
             process.exit(1);
         } else {
-            console.log(BACKUP_CREATED);
+            console.log(messages.BACKUP_CREATED);
         }
     }
 };
@@ -74,7 +50,7 @@ const createInitialProfile = async (): Promise<void> => {
         {
             type: 'input',
             name: 'name',
-            message: CREATE_PROFILE,
+            message: messages.CREATE_PROFILE,
             default: constants.GPM_DEFAULT_PROFILE_NAME,
         },
     ]);
@@ -95,12 +71,17 @@ export const handleInit = async (): Promise<void> => {
     // - ask if they'd like to move any properties to this profile
 
     if (common.gpmInitialized()) {
-        console.log(ALREADY_INITIALIZED);
+        console.log(messages.ALREADY_INITIALIZED);
         process.exit(1);
     }
 
     if (fs.existsSync(constants.GRADLE_PROPERTIES_FILE_LOCATION)) {
         await backupExistingPropertiesFile();
+    }
+
+    if (!fs.existsSync(constants.GRADLE_HOME_DIRECTORY_LOCATION)) {
+        console.log(messages.GRADLE_NOT_FOUND);
+        process.exit(1);
     }
 
     // Create gpm-controlled gradle.properties file
