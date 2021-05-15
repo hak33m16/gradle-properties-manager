@@ -13,12 +13,12 @@ program
     .description('Add a new property with the given name')
     .option(
         '-e, --encoded',
-        'Property will be base64 encoded. If the value is omitted, user will be silently prompted',
+        'Property will be base64 encoded and masked on display. If the value is omitted, user will be silently prompted',
         false
     )
     .option(
         '-m, --masked',
-        'Property will be base64 encoded. If the value is omitted, user will be silently prompted',
+        'Property will be masked when displayed. If the value is omitted, user will be silently prompted',
         false
     )
     .option(

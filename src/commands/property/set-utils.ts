@@ -34,9 +34,7 @@ export const setProperty = (
         )
         .save();
 
-    if (profile == common.getCurrentProfileName()) {
-        common.compileGradleProperties(profile);
-    }
+    common.compileGradleProperties(common.getCurrentProfileName());
 
     return true;
 };

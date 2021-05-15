@@ -18,4 +18,6 @@ export const removeProperty = (
             .removeProperty(key)
             .save();
     }
+
+    common.compileGradleProperties(common.getCurrentProfileName());
 };
