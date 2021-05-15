@@ -1,4 +1,4 @@
-[![Build Status](https://github.com/hak33m16/gradle-properties-manager/workflows/build/badge.svg)](https://github.com/hak33m16/gradle-properties-manager/actions?query=workflow%3A%22build%22)
+[![Build Status](https://github.com/hak33m16/gradle-properties-manager/workflows/build/badge.svg?branch=master)](https://github.com/hak33m16/gradle-properties-manager/actions?query=workflow%3Abuild+branch%3Amaster)
 
 # Gradle Properties Manager
 
