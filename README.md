@@ -1,3 +1,5 @@
+[![Build Status](https://github.com/hak33m16/gradle-properties-manager/workflows/build/badge.svg)](https://github.com/hak33m16/gradle-properties-manager/actions?query=workflow%3A%22build%22)
+
 # Gradle Properties Manager
 
 The globally available `~/.gradle/gradle.properties` is often used to alter values for a particular team or project within organizations. Manual management of this file is cumbersome, so this node module aims to ease that burden.
