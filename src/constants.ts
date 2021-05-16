@@ -2,11 +2,12 @@ import os from 'os';
 import path from 'path';
 
 export const USER_HOME = os.homedir();
+// https://docs.gradle.org/current/userguide/build_environment.html#sec:gradle_configuration_properties
+export const GRADLE_USER_HOME = process.env.GRADLE_USER_HOME;
 export const GRADLE_HOME_DIRECTORY_NAME = '.gradle';
-export const GRADLE_HOME_DIRECTORY_LOCATION = path.join(
-    USER_HOME,
-    GRADLE_HOME_DIRECTORY_NAME
-);
+// Consider adding logging functionality for when we use the environment variable
+export const GRADLE_HOME_DIRECTORY_LOCATION =
+    GRADLE_USER_HOME ?? path.join(USER_HOME, GRADLE_HOME_DIRECTORY_NAME);
 export const GRADLE_PROPERTIES_FILE_NAME = 'gradle.properties';
 export const GRADLE_PROPERTIES_FILE_LOCATION = path.join(
     GRADLE_HOME_DIRECTORY_LOCATION,
@@ -18,7 +19,10 @@ export const GRADLE_PROPERTIES_BAK_FILE_LOCATION = path.join(
     `${GRADLE_PROPERTIES_FILE_NAME}.bak`
 );
 export const GPM_HOME_DIRECTORY_NAME = '.gpm';
-export const GPM_HOME_PATH = path.join(USER_HOME, GPM_HOME_DIRECTORY_NAME);
+export const GPM_USER_HOME = process.env.GPM_USER_HOME;
+// Consider adding logging functionality for when we use the environment variable
+export const GPM_HOME_PATH =
+    GPM_USER_HOME ?? path.join(USER_HOME, GPM_HOME_DIRECTORY_NAME);
 export const GPM_GLOBAL_PROPERTIES_FILE_NAME = 'global.properties';
 export const GPM_GLOBAL_PROPERTIES_FILE_LOCATION = path.join(
     GPM_HOME_PATH,
