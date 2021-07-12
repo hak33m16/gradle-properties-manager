@@ -1,11 +1,11 @@
 {
     "author": "hak33m16",
-    "name": "gradle-properties-manager",
+    "name": "gpman",
     "version": "0.0.1",
     "description": "CLI utility for managing several instances of global gradle.properties files",
     "license": "MIT",
     "bin": {
-        "gradle-properties-manager": "./bin/gradle-properties-manager"
+        "gpman": "./bin/gpman"
     },
     "publishConfig": {
         "access": "public"
@@ -15,7 +15,7 @@
         "gradle",
         "properties",
         "manager",
-        "gradle-properties-manager"
+        "gpman"
     ],
     "scripts": {
         "lint": "eslint --ext .js,.ts src",

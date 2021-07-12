@@ -2,7 +2,7 @@ import chalk from 'chalk';
 import * as constants from '../../constants';
 
 export const ALREADY_INITIALIZED = chalk.red(
-    "You've already initialized gradle-properties-manager..."
+    "You've already initialized gpman..."
 );
 
 export const BACKUP_ALREADY_EXISTS = chalk.red(
