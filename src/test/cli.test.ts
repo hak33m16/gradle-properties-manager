@@ -14,7 +14,7 @@ type CliResponse = {
     code: number;
 };
 
-const cmdStart = `node ${path.resolve('./bin/gradle-properties-manager')}`;
+const cmdStart = `node ${path.resolve('./bin/gpman')}`;
 
 // testing methodology from https://github.com/superflycss/cli
 function cli(

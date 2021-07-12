@@ -16,23 +16,23 @@ The globally available `~/.gradle/gradle.properties` is often used to alter valu
 ## Installation
 
 ```bash
-npm install -g gradle-properties-manager
+npm install -g gpman
 ```
 
 ## Usage
 
-Executable available as `gradle-properties-manager`
+Executable available as `gpman`
 
 It's highly recommended, and will be assumed throughout this guide that you create an alias which points to it called `gpm`. To do this, you can add the following to your `~/.bashrc` or `~/.zshrc`:
 
 ```bash
-alias gpm='gradle-properties-manager'
+alias gpm='gpman'
 ```
 
 ### Overview
 
 ```
-Usage: gradle-properties-manager [options] [command]
+Usage: gpman [options] [command]
 
 Options:
   -h, --help      display help for command
@@ -55,7 +55,7 @@ You'll be taken through a series of prompts where you'll have the option to back
 ### Managing Profiles
 
 ```
-Usage: gradle-properties-manager-profile [options] [command]
+Usage: gpman-profile [options] [command]
 
 Get the name of the current profile
 
@@ -72,7 +72,7 @@ Commands:
 ### Managing Properties
 
 ```
-Usage: gradle-properties-manager-property [options] [command]
+Usage: gpman-property [options] [command]
 
 Options:
   -h, --help                   display help for command
